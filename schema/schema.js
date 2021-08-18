@@ -19,8 +19,7 @@ const StudentType = new GraphQLObjectType({
         email:{type:GraphQLString},
         Phone:{type:GraphQLString},
         address:{type:GraphQLString},
-       
-
+        
     })
 })
 
@@ -29,9 +28,8 @@ const RootQuery = new GraphQLObjectType({
     fields:{
         student:{
             type:StudentType,
-            args: { id: { type: GraphQLID } },
+            args: { id: { type: GraphQLID },limit: { type: GraphQLID }},
             resolve(parent, args){
-                console.log("args ", args);
                 return studentModel.findById(args.id);
             }
         }
@@ -103,15 +101,14 @@ const Mutation = new GraphQLObjectType({
             }
         },
         studentsList:{
-            type: StudentType,
+            type: new GraphQLList(StudentType),
             args: {
                 limit:{type:GraphQLID},
             },
-            async resolve(parent, args){
-                studentsList = await studentModel.find().limit(parseInt(args.limit)).exec()
-                console.log('studentsList ', studentsList)
+            resolve: async (parent, args)=>{
+                let studentsList = await studentModel.find().limit(parseInt(args.limit)).exec();
                 return studentsList
-            }
+            } 
         }
     }
 });
