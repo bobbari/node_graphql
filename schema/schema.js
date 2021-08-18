@@ -107,15 +107,10 @@ const Mutation = new GraphQLObjectType({
             args: {
                 limit:{type:GraphQLID},
             },
-            resolve(parent, args){
-                return studentModel.find({
-                    firstName:args.firstName,
-                    lastName:args.lastName,
-                    email:args.email,
-                    Phone:args.Phone,
-                    address:args.address,
-                    meeting_time:args.meeting_time
-                }).limit(parseInt(args.limit));
+            async resolve(parent, args){
+                studentsList = await studentModel.find().limit(parseInt(args.limit)).exec()
+                console.log('studentsList ', studentsList)
+                return studentsList
             }
         }
     }
